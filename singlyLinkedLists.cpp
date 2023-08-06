@@ -26,6 +26,8 @@ class Node
             key = k;
 
             data = d;
+
+            next = NULL
         }
 };
 
