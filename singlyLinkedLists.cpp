@@ -147,7 +147,7 @@ class SinglyLinkedList
             {
                 cout << "Empty" << endl;
             }
-            else if (head != NULL)
+            else
             {
                 if (head->key == k)
                 {
