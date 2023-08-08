@@ -26,23 +26,18 @@ class Node
             key = k;
 
             data = d;
-        }
+        }       
 };
 
-class SinglyLinkedList
+class CircularLinkedList
 {
     public:
 
         Node* head;
 
-        SinglyLinkedList ()
+        CircularLinkedList ()
         {
             head = NULL;
-        }
-
-        SinglyLinkedList (Node *n)
-        {
-            head = n;
         }
 
         // Check if node exists
@@ -53,22 +48,30 @@ class SinglyLinkedList
 
             Node* ptr = head;
 
-            while (ptr != NULL)
+            if (ptr == NULL)
             {
-                if (ptr->key == k)
-                {
-                    temp = ptr;
-                }
-
-                ptr = ptr->next;
+                return temp;
             }
+            else
+            {
+                do
+                {
+                    if (ptr->key == k)
+                    {
+                        temp = ptr;
+                    }
 
-            return temp;
+                    ptr = ptr->next;
+                }
+                while (ptr != head);
+            
+                return temp;
+            }
         }
 
-        // Append node
+        // Append
 
-        void appendNode(Node *n)
+        void appendNode (Node* n)
         {
             if (nodeExists(n->key) != NULL)
             {
@@ -79,26 +82,30 @@ class SinglyLinkedList
                 if (head == NULL)
                 {
                     head = n;
+
+                    n->next = head;
                 }
                 else
                 {
                     Node* ptr = head;
 
-                    while (ptr->next != NULL)
-                    {   
+                    while (ptr->next != head)
+                    {
                         ptr = ptr->next;
                     }
 
                     ptr->next = n;
+
+                    n->next = head;
                 }
 
                 cout << "Appended" << endl;
             }
         }
 
-        // Prepend node
+        // Prepend
 
-        void prependNode(Node* n)
+        void prependNode (Node* n)
         {
             if (nodeExists(n->key) != NULL)
             {
@@ -106,17 +113,26 @@ class SinglyLinkedList
             }
             else
             {
+                Node* ptr = head;
+
+                while (ptr->next != head)
+                {
+                    ptr = ptr->next;
+                }
+
+                ptr->next = n;
+
                 n->next = head;
-                
+
                 head = n;
 
                 cout << "Prepended" << endl;
             }
         }
 
-        // Insert node
+        // Insert
 
-        void insertNode(int k, Node *n)
+        void insertNode (int k, Node* n)
         {
             Node* ptr = nodeExists(k);
 
@@ -132,70 +148,90 @@ class SinglyLinkedList
                 }
                 else
                 {
-                    n->next = ptr->next;
+                    if (ptr->next == head)
+                    {
+                        n->next = head;
 
-                    ptr->next = n;
+                        ptr->next = n;
+                    }
+                    else
+                    {
+                        n->next = ptr->next;
+
+                        ptr->next = n;
+                    }
+
+                    cout << "Inserted" << endl;
                 }
             }
         }
 
-        // Delete node
+        // Delete
 
-        void deleteNode(int k)
+        void deleteNode (int k)
         {
-            if (head == NULL)
+            Node* ptr = nodeExists(k);
+
+            if (ptr == NULL)
             {
-                cout << "Empty" << endl;
+                cout << "Does not exist" << endl;
             }
             else
             {
-                if (head->key == k)
+                if (ptr == head)
                 {
-                    head = head->next;
+                    if (head->next == NULL)
+                    {
+                        head = NULL;
+                    }
+                    else
+                    {
+                        Node* ptr = head;
 
-                    cout << "Unlinked" << endl;
+                        while (ptr->next != head)
+                        {
+                            ptr = ptr->next;
+                        }
+
+                        ptr->next = head->next;
+
+                        head = head->next;
+                    }
                 }
                 else
                 {
                     Node* temp = NULL;
 
-                    Node* prevptr = head;
+                    Node* previous = head;
 
-                    Node* currentptr = head->next;
+                    Node* current = head->next;
 
-                    while (currentptr != NULL)
+                    while (current != NULL)
                     {
-                        if (currentptr->key == k)
+                        if (current->key == k)
                         {
-                            temp = currentptr;
+                            temp = current;
 
-                            currentptr = NULL;
+                            current = NULL;
                         }
                         else
                         {
-                            prevptr = prevptr->next;
+                            previous = previous->next;
 
-                            currentptr = currentptr->next;
+                            current = current->next;
                         }
                     }
 
-                    if (temp != NULL)
-                    {
-                        prevptr->next = temp->next;
-
-                        cout << "Unlinked" << endl;
-                    }
-                    else
-                    {
-                        cout << "Does not exist" << endl;
-                    }
+                    previous->next = temp->next;
                 }
+
+                cout << "Unlinked" << endl;
             }
         }
 
-        // Update node
+        // Update
 
-        void updateNode(int k, int d)
+        void updateNode (int k, int d)
         {
             Node* ptr = nodeExists(k);
 
@@ -211,39 +247,44 @@ class SinglyLinkedList
             }
         }
 
-        // Print node
+        // Print
 
         void printList()
         {
             if (head == NULL)
             {
-                cout << "Empty" << endl;
+                cout << "Does not exist" << endl;
             }
             else
             {
-                cout << endl << "Values: ";
-                
+                cout << endl << "Head: " << head << endl;
+
+                cout << "Values: " << endl;
+
                 Node* temp = head;
 
                 std::string end;
 
-                while (temp != NULL)
+                do
                 {
-                    end = (temp->next == NULL) ? " --> NULL" : " --> ";
-                    
-                    cout << "(" << temp->key << "," << temp->data << ")" << end;
+                    end = (temp->next == head) ? " --> BACK TO HEAD" : " --> ";
+
+                    cout << "(" << temp->key << "," << temp->data << "," << temp->next << ")" << end;
 
                     temp = temp->next;
                 }
+                while (temp != head);
 
                 cout << endl;
             }
         }
+
+
 };
 
 int main()
 {
-    SinglyLinkedList s;
+    CircularLinkedList s;
 
     int option;
 

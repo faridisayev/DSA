@@ -30,10 +30,6 @@ class Node
             this->key = key;
 
             this->data = data;
-
-            next = NULL;
-
-            previous = NULL;
         }
 };
 
