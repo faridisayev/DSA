@@ -12,44 +12,50 @@ class Node
 
         Node* next;
 
-        Node ()
+        Node* previous;
+
+        Node()
         {
             key = 0;
 
             data = 0;
 
             next = NULL;
+
+            previous = NULL;
         }
 
-        Node (int k, int d)
+        Node (int key, int data)
         {
-            key = k;
+            this->key = key;
 
-            data = d;
+            this->data = data;
 
-            next = NULL
+            next = NULL;
+
+            previous = NULL;
         }
 };
 
-class SinglyLinkedList
+class DoublyLinkedList
 {
     public:
 
         Node* head;
 
-        SinglyLinkedList ()
+        DoublyLinkedList()
         {
             head = NULL;
         }
 
-        SinglyLinkedList (Node *n)
+        DoublyLinkedList(Node* n)
         {
             head = n;
         }
 
         // Check if node exists
 
-        Node* nodeExists (int k)
+        Node* nodeExists(int k)
         {
             Node* temp = NULL;
 
@@ -68,9 +74,9 @@ class SinglyLinkedList
             return temp;
         }
 
-        // Append node
+        // Append
 
-        void appendNode(Node *n)
+        void appendNode(Node* n)
         {
             if (nodeExists(n->key) != NULL)
             {
@@ -81,24 +87,28 @@ class SinglyLinkedList
                 if (head == NULL)
                 {
                     head = n;
+
+                    cout << "Appended" << endl;
                 }
                 else
                 {
                     Node* ptr = head;
 
                     while (ptr->next != NULL)
-                    {   
+                    {
                         ptr = ptr->next;
                     }
 
                     ptr->next = n;
-                }
 
-                cout << "Appended" << endl;
+                    n->previous = ptr;
+
+                    cout << "Appended" << endl;
+                }
             }
         }
 
-        // Prepend node
+        // Prepend
 
         void prependNode(Node* n)
         {
@@ -108,17 +118,28 @@ class SinglyLinkedList
             }
             else
             {
-                n->next = head;
-                
-                head = n;
+                if (head == NULL)
+                {
+                    head = n;
 
-                cout << "Prepended" << endl;
+                    cout << "Prepended" << endl;
+                }
+                else
+                {
+                    head->previous = n;
+
+                    n->next = head;
+
+                    head = n;
+
+                    cout << "Prepended" << endl;
+                }
             }
         }
 
-        // Insert node
+        // Insert
 
-        void insertNode(int k, Node *n)
+        void insertNode(int k, Node* n)
         {
             Node* ptr = nodeExists(k);
 
@@ -134,20 +155,39 @@ class SinglyLinkedList
                 }
                 else
                 {
-                    n->next = ptr->next;
+                    Node* nextNode = ptr->next;
 
-                    ptr->next = n;
+                    if (nextNode == NULL)
+                    {
+                        ptr->next = n;
+                        
+                        n->previous = ptr;
+                    }
+                    else
+                    {
+                        n->next = nextNode;
+
+                        nextNode->previous = n;
+
+                        n->previous = ptr;
+
+                        ptr->next = n;
+                    }
+
+                    cout << "Inserted" << endl;
                 }
             }
         }
 
-        // Delete node
+        // Delete
 
         void deleteNode(int k)
         {
-            if (head == NULL)
+            Node* ptr = nodeExists(k);
+
+            if (ptr == NULL)
             {
-                cout << "Empty" << endl;
+                cout << "Does not exist" << endl;
             }
             else
             {
@@ -159,43 +199,27 @@ class SinglyLinkedList
                 }
                 else
                 {
-                    Node* temp = NULL;
+                    Node* nextNode = ptr->next;
 
-                    Node* prevptr = head;
+                    Node* prevNode = ptr->previous;
 
-                    Node* currentptr = head->next;
-
-                    while (currentptr != NULL)
+                    if (nextNode == NULL)
                     {
-                        if (currentptr->key == k)
-                        {
-                            temp = currentptr;
-
-                            currentptr = NULL;
-                        }
-                        else
-                        {
-                            prevptr = prevptr->next;
-
-                            currentptr = currentptr->next;
-                        }
-                    }
-
-                    if (temp != NULL)
-                    {
-                        prevptr->next = temp->next;
-
-                        cout << "Unlinked" << endl;
+                        prevNode->next = NULL;
                     }
                     else
                     {
-                        cout << "Does not exist" << endl;
+                        prevNode->next = nextNode;
+
+                        nextNode->previous = prevNode;
                     }
+
+                    cout << "Deleted" << endl;
                 }
             }
         }
 
-        // Update node
+        // Update
 
         void updateNode(int k, int d)
         {
@@ -213,13 +237,13 @@ class SinglyLinkedList
             }
         }
 
-        // Print node
+        // Print
 
         void printList()
         {
             if (head == NULL)
             {
-                cout << "Empty" << endl;
+                cout << "Does not exist" << endl;
             }
             else
             {
@@ -231,7 +255,7 @@ class SinglyLinkedList
 
                 while (temp != NULL)
                 {
-                    end = (temp->next == NULL) ? " --> NULL" : " --> ";
+                    end = (temp->next == NULL) ? " <--> NULL" : " <--> ";
                     
                     cout << "(" << temp->key << "," << temp->data << ")" << end;
 
@@ -245,7 +269,7 @@ class SinglyLinkedList
 
 int main()
 {
-    SinglyLinkedList s;
+    DoublyLinkedList s;
 
     int option;
 
